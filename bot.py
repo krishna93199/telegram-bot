@@ -19,10 +19,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[InlineKeyboardButton(name, url=link)] for name, link in CHANNELS]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    # reward image
-    await update.message.reply_photo(
-        photo="https://i.ibb.co/1mW9Wcn/congratulations.png",
-        caption="🎉 *Congratulations!*\n\nAapko ek special bonus milne wala hai 🎁",
+    # message (without image)
+    await update.message.reply_text(
+        "🎉 *Congratulations!*\n\nAapko ek special bonus milne wala hai 🎁",
         parse_mode=ParseMode.MARKDOWN
     )
 
