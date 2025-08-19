@@ -1,64 +1,59 @@
+import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
-# 🔑 अपना BotFather वाला Token यहां डालो
-TOKEN = "7709087276:AAE4Gh04ucQWDkANg0UCbK6p3qLb8mUhquM"
+BOT_TOKEN = "7709087276:AAE4Gh04ucQWDkANg0UCbK6p3qLb8mUhquM"
 
-# ✅ जिन channels को join करवाना है (links डालो)
+# Channels list
 CHANNELS = [
-    "https://t.me/+uSy_l51dEitiMGU1",
-    "https://t.me/+BFnTHodoq-o2YTc9",
-    "https://t.me/+c8xbqNm8G7tmYzll",
-    "https://t.me/+SdxjhqeAvW5kMTJl"
+    ("Channel 1", "https://t.me/+EtDaG5R8bJtjNDBl"),
+    ("Channel 2", "https://t.me/+BFnTHodoq-o2YTc9"),
+    ("Channel 3", "https://t.me/+c8xbqNm8G7tmYzll"),
+    ("Channel 4", "https://t.me/+SdxjhqeAvW5kMTJl"),
+    ("Channel 5", "https://t.me/hyperlootzone"),
 ]
 
-# 🔹 Start Command
+# /start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [[InlineKeyboardButton("✅ Join Channels", callback_data="check")]]
+    keyboard = [[InlineKeyboardButton(name, url=link)] for name, link in CHANNELS]
     reply_markup = InlineKeyboardMarkup(keyboard)
+
+    # reward image
+    await update.message.reply_photo(
+        photo="https://i.ibb.co/1mW9Wcn/congratulations.png",
+        caption="🎉 *Congratulations!*\n\nAapko ek special bonus milne wala hai 🎁",
+        parse_mode="Markdown"
+    )
+
+    await asyncio.sleep(2)
+
+    text = (
+        "👉 Sabhi channels join karo aur phir apna UID bhejo.\n\n"
+        "⏳ Gift code aapko *jaldi hi mil jayega!* ✅"
+    )
 
     await update.message.reply_text(
-        "👋 Welcome to Free Paytm Cash Bot!\n\n"
-        "👉 पहले इन channels को join करो, तभी आगे बढ़ पाओगे 👇\n\n" +
-        "\n".join(CHANNELS),
-        reply_markup=reply_markup
+        text,
+        reply_markup=reply_markup,
+        parse_mode="Markdown"
     )
 
-# 🔹 Channel Check (Fake Verification)
-async def check_channels(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-
-    # ⚠️ यहां असली verification नहीं है, सिर्फ दिखाने के लिए fake check
-    keyboard = [[InlineKeyboardButton("💰 Claim Free Paytm Cash", callback_data="payment")]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    await query.edit_message_text(
-        "✅ Channels join हो गए!\n\nअब अपना reward लो 👇",
-        reply_markup=reply_markup
+# UID handle
+async def handle_uid(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await context.bot.send_chat_action(chat_id=update.effective_chat.id, action="typing")
+    await asyncio.sleep(3)
+    await update.message.reply_text(
+        "⏳ Processing...\n\n🎁 Aapka gift code *jaldi hi mil jayega* ✅",
+        parse_mode="Markdown"
     )
 
-# 🔹 Fake Payment Page
-async def payment_page(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-
-    await query.edit_message_text(
-        "💸 आपने 50₹ Paytm Cash Claim किया है!\n\n"
-        "🕒 Payment Process हो रहा है...\n\n"
-        "⚠️ Note: यह demo है, असली पैसे नहीं मिलेंगे!"
-    )
-
-# 🔹 Main Function
 def main():
-    app = Application.builder().token(TOKEN).build()
-
+    app = Application.builder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CallbackQueryHandler(check_channels, pattern="check"))
-    app.add_handler(CallbackQueryHandler(payment_page, pattern="payment"))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_uid))
 
-    print("🤖 Bot is running...")
+    print("🤖 Bot running...")
     app.run_polling()
+
 if __name__ == "__main__":
     main()
-
