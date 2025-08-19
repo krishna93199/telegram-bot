@@ -1,5 +1,6 @@
 import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.constants import ChatAction, ParseMode
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
 BOT_TOKEN = "8296566949:AAGBpgUV-pB-qlHj15cWwKVBoHp0TGrH1xU"
@@ -22,7 +23,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo="https://i.ibb.co/1mW9Wcn/congratulations.png",
         caption="🎉 *Congratulations!*\n\nAapko ek special bonus milne wala hai 🎁",
-        parse_mode="Markdown"
+        parse_mode=ParseMode.MARKDOWN
     )
 
     await asyncio.sleep(2)
@@ -35,16 +36,16 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         text,
         reply_markup=reply_markup,
-        parse_mode="Markdown"
+        parse_mode=ParseMode.MARKDOWN
     )
 
 # UID handle
 async def handle_uid(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_chat_action(chat_id=update.effective_chat.id, action="typing")
+    await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=ChatAction.TYPING)
     await asyncio.sleep(3)
     await update.message.reply_text(
         "⏳ Processing...\n\n🎁 Aapka gift code *jaldi hi mil jayega* ✅",
-        parse_mode="Markdown"
+        parse_mode=ParseMode.MARKDOWN
     )
 
 def main():
@@ -57,5 +58,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
