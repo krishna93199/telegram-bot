@@ -2,7 +2,7 @@ import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
-BOT_TOKEN = "7709087276:AAE4Gh04ucQWDkANg0UCbK6p3qLb8mUhquM"
+BOT_TOKEN = "7709087276:AAEyejn2QcY0l7yYDdmVqp1R7alTl7A42lU"
 
 # Channels list
 CHANNELS = [
@@ -57,3 +57,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
